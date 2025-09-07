@@ -1,0 +1,118 @@
+.sg-container {
+  min-height: 100vh;
+  background: #0b0b0c;
+  color: #e5e7eb;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 24px;
+  gap: 16px;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+}
+
+.sg-hud {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  user-select: none;
+}
+
+.sg-names {
+  display: flex;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.sg-redName { color: #ef4444; }
+.sg-blueName { color: #3b82f6; }
+
+.sg-signal {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  box-shadow: 0 0 18px rgba(0,0,0,.35) inset, 0 0 10px rgba(255,255,255,.08);
+  border: 2px solid rgba(255,255,255,.15);
+  transition: background .2s ease;
+}
+
+
+.sg-restartBtn {
+  background: #111827;
+  color: #e5e7eb;
+  border: 1px solid #374151;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.sg-restartBtn:hover { background: #1f2937; }
+
+.sg-arena {
+  position: relative;
+  border: 2px solid #374151;
+  background: radial-gradient(ellipse at center, #0f172a 0%, #0b1020 65%, #0b0b0c 100%);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+
+.sg-finish {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(90deg, #22c55e 0 16px, transparent 16px 24px);
+  opacity: .9;
+}
+
+.sg-player {
+  position: absolute;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.35);
+}
+.sg-player.sg-red  { background: #ef4444; border: 2px solid #b91c1c; }
+.sg-player.sg-blue { background: #3b82f6; border: 2px solid #1d4ed8; }
+
+.sg-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  display: grid;
+  place-items: center;
+  z-index: 20;
+}
+
+.sg-dialog {
+  background: #111827;
+  border: 1px solid #374151;
+  padding: 18px 22px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0,0,0,.45);
+}
+.sg-dialog h3 { margin: 0 0 12px 0; }
+.sg-dialogBtns { display: flex; gap: 8px; justify-content: center; }
+.sg-dialog button {
+  background: #2563eb;
+  color: white;
+  border: 0;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.sg-dialog button:hover { filter: brightness(1.05); }
+
+.sg-help {
+  font-size: 14px;
+  color: #cbd5e1;
+  text-align: center;
+  user-select: none;
+}
+
+.sg-badge {
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 12px;
+}
+.sg-redBadge { background: #ef4444; color: #111; }

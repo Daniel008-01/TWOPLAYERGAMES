@@ -1,0 +1,326 @@
+.cards {
+    background-color: #adacac;
+    border-radius: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 0;
+    list-style: none;
+    justify-content: center; // выравнивание
+  }
+
+  .home-title {
+   
+    text-align: center;
+    font-size: 2.5rem;
+    margin: 20px 0;
+    color: #6A515E;
+    font-family: 'MockFlowFont', sans-serif;
+    position: relative;
+    cursor: pointer;
+  
+    // постоянная анимация — волна
+   
+    animation: wave 3s ease-in-out infinite;
+  
+    // эффект при наведении
+    &::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -5px;
+      width: 0;
+      height: 3px;
+      background-color: #6A515E;
+      transition: all 0.4s ease;
+      transform: translateX(-50%);
+      border-radius: 2px;
+    }
+  
+    &:hover::after {
+      width: 80%;
+    }
+  }
+  
+  // 🌊 "волна"
+  @keyframes wave {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(2deg); }
+    50% { transform: rotate(0deg); }
+    75% { transform: rotate(-2deg); }
+    100% { transform: rotate(0deg); }
+  }
+  
+  .cards li {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    flex: 1 1 calc(33.333% - 20px); // 3 в ряд
+    max-width: 400px; // ограничение по ширине карточки
+  }
+  
+    
+    .c-con{
+        display: flex;
+    }
+
+  .card {
+    position: relative;
+    display: block;
+    height: 100%;  
+    border-radius: calc(var(--curve) * 1px);
+    overflow: hidden;
+    text-decoration: none;
+  }
+  
+  .card__image {      
+    width: 400px;
+    height: 300px;
+    object-fit: cover;
+  }
+  
+  .card__overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;      
+    border-radius: calc(var(--curve) * 1px);    
+    background-color: var(--surface-color);      
+    transform: translateY(100%);
+    transition: .2s ease-in-out;
+  }
+  
+  .card:hover .card__overlay {
+    transform: translateY(0);
+  }
+  
+  .card__header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 2em;
+    padding: 2em;
+    border-radius: calc(var(--curve) * 1px) 0 0 0;    
+    background-color: var(--surface-color);
+    transform: translateY(-100%);
+    transition: .2s ease-in-out;
+  }
+  
+  .card__arc {
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    bottom: 100%;
+    right: 0;      
+    z-index: 1;
+  }
+  
+  .card__arc path {
+    fill: var(--surface-color);
+    d: path("M 40 80 c 22 0 40 -22 40 -40 v 40 Z");
+  }       
+  
+  .card:hover .card__header {
+    transform: translateY(0);
+  }
+  
+  .card__thumb {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;      
+    border-radius: 50%;      
+  }
+  
+  .card__title {
+    font-size: 1em;
+    margin: 0 0 .3em;
+    color: #6A515E;
+  }
+  
+  .card__tagline {
+    display: block;
+    margin: 1em 0;
+    font-family: "MockFlowFont";  
+    font-size: .8em; 
+    color: #D7BDCA;  
+  }
+  
+  .card__status {
+    font-size: .8em;
+    color: #D7BDCA;
+  }
+  
+  .card__description {
+    padding: 10px 20px;
+    margin: 10px auto;
+    color: #D7BDCA;
+    border: 2px solid currentColor;
+    border-radius: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+    margin-left: 38%;
+  
+    
+    &:active {
+      transform: scale(0.95);
+    }
+  
+   
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2); 
+      transition: left 0.4s ease;
+      z-index: 0;
+    }
+  
+    &:hover::before {
+      left: 0; 
+    }
+  
+    &:hover {
+      letter-spacing: 2px; 
+    }
+  }
+  
+
+  :root {
+    --surface-color: #fff;
+    --curve: 40;
+  }
+  
+
+// отделение
+
+
+  // .home-container {
+  //   padding: 30px;
+  //   background: linear-gradient(135deg, #1f1c2c, #928dab);
+  //   min-height: 100vh;
+  // }
+  
+  // .home-title {
+  //   text-align: center;
+  //   font-size: 3rem;
+  //   color: #fff;
+  //   font-family: 'MockFlowFont', sans-serif;
+  //   margin-bottom: 40px;
+  //   animation: wave 3s ease-in-out infinite;
+  //   text-shadow: 0 0 15px rgba(255,255,255,0.4);
+  // }
+  
+  // @keyframes wave {
+  //   0% { transform: rotate(0deg); }
+  //   25% { transform: rotate(2deg); }
+  //   50% { transform: rotate(0deg); }
+  //   75% { transform: rotate(-2deg); }
+  //   100% { transform: rotate(0deg); }
+  // }
+  
+  // .cards {
+  //   display: flex;
+  //   flex-wrap: wrap;
+  //   gap: 30px;
+  //   justify-content: center;
+  //   list-style: none;
+  //   padding: 0;
+  // }
+  
+  // .card-wrapper {
+  //   flex: 1 1 280px;
+  //   max-width: 320px;
+  // }
+  
+  // .card {
+  //   position: relative;
+  //   border-radius: 20px;
+  //   overflow: hidden;
+  //   cursor: pointer;
+  //   transition: transform 0.3s, box-shadow 0.3s;
+  //   &:hover {
+  //     transform: translateY(-10px);
+  //     box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  //   }
+  // }
+  
+  // .card__image {
+  //   width: 100%;
+  //   height: 200px;
+  //   object-fit: cover;
+  // }
+  
+  // .card__overlay {
+  //   position: absolute;
+  //   bottom: 0;
+  //   left: 0;
+  //   right: 0;
+  //   background: rgba(0,0,0,0.6);
+  //   color: #fff;
+  //   transform: translateY(100%);
+  //   transition: transform 0.3s ease-in-out;
+  //   padding: 20px;
+  // }
+  
+  // .card:hover .card__overlay {
+  //   transform: translateY(0);
+  // }
+  
+  // .card__header {
+  //   display: flex;
+  //   align-items: center;
+  //   gap: 15px;
+  // }
+  
+  // .card__thumb {
+  //   width: 50px;
+  //   height: 50px;
+  //   border-radius: 50%;
+  //   border: 2px solid #fff;
+  // }
+  
+  // .card__title {
+  //   font-size: 1.2rem;
+  //   margin: 0;
+  // }
+  
+  // .card__status {
+  //   font-size: 0.9rem;
+  //   margin: 2px 0 0;
+  //   color: #ddd;
+  // }
+  
+  // .card__stage {
+  //   text-align: center;
+  //   margin-top: 15px;
+  // }
+  
+  // .card__description {
+  //   padding: 10px 25px;
+  //   border-radius: 12px;
+  //   border: none;
+  //   font-weight: 600;
+  //   color: #fff;
+  //   cursor: pointer;
+  //   font-size: 1rem;
+  //   transition: transform 0.2s, box-shadow 0.2s;
+  //   position: relative;
+  //   overflow: hidden;
+  
+  //   &:hover {
+  //     transform: translateY(-3px);
+  //     box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+  //   }
+  
+  //   &:active {
+  //     transform: scale(0.95);
+  //   }
+  // }
+  

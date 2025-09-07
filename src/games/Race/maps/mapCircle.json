@@ -1,0 +1,24 @@
+[
+    {
+    "id": "classic_ring",
+    "name": "Классическое кольцо",
+    "arena": { "w": 900, "h": 520, "padding": 0 },
+    "center": { "cx": 450, "cy": 260 },
+    "innerR": 110,
+    "outerR": 220,
+    "finish": { "angle": -1.5708, "width": 10 },
+    "lapTarget": 3,
+    "starts": {
+        "p1": { "x": 170, "y": 300, "angle": 4.7 },
+        "p2": { "x": 230, "y": 300, "angle": 4.7 }
+      },
+    "walls": [
+      { "type": "circle", "x": 290, "y": 180, "r": 18 },
+      { "type": "circle", "x": 290, "y": 340, "r": 18 },
+      { "type": "circle", "x": 610, "y": 180, "r": 18 },
+      { "type": "circle", "x": 610, "y": 340, "r": 18 }
+    ]
+  }
+  
+  ]
+  

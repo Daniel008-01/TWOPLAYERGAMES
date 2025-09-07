@@ -1,0 +1,89 @@
+// GuessNumber.scss
+.game-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+  }
+  
+  .title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: left;
+
+  }
+  
+  .player {
+    font-weight: bold;
+  }
+  
+  .blue {
+    color: #3b82f6;
+  }
+  
+  .red {
+    color: #ef4444;
+  }
+  
+  .game-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .game-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  input[type="number"] {
+    padding: 6px 10px;
+    font-size: 1rem;
+    width: 120px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    text-align: center;
+  }
+  
+  button {
+    padding: 6px 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 6px;
+    background-color: #10b981;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+  }
+  
+  button:hover {
+    transform: scale(1.05);
+    background-color: #059669;
+  }
+  
+  .log {
+    text-align: left;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 0;
+    list-style: none;
+  }
+  
+  .log li {
+    padding: 4px 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .back-btn {
+    margin-top: 20px;
+    background-color: #3b82f6;
+  }
+  
+  .back-btn:hover {
+    background-color: #2563eb;
+  }
+  
