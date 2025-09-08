@@ -1,4 +1,4 @@
-import "./footer.css";
+import "./footer.scss";
 import logo from "../header/logo-Cite.jpg"; 
 import GitHub from './GitHub.png';
 import { Link } from "react-router-dom";
