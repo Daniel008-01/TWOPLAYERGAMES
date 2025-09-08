@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./SquidGame.scss";
+import "./squidGame.scss";
 
 export default function SquidGame() {
   const name1 = localStorage.getItem("name1") || "Красный";

@@ -1,6 +1,6 @@
 // Game.jsx
 import { useEffect, useState } from "react";
-import "./GuessNumber.scss";
+import "./guessNumber.scss";
 import { Link } from "react-router-dom";
 
 export default function Game({ onBack }) {
