@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./changeNames.scss";
+import "./ChangeNames.scss";
 
 export default function ChangeNames() {
   const [name1, setName1] = useState("Красный");
