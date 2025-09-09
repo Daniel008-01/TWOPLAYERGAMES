@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import tanki from "../../img/tanki.jpg";
+import tanki from "../../img/tankmayhem.jpg";
 import chislo from "../../img/chislo.jpg";
 import race from "../../img/race.jpg";
 import eye from "../../img/eye.jpg";
