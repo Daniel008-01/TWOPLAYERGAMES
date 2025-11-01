@@ -12,13 +12,12 @@ export default function Pictionary({ onBack }) {
   const [guess, setGuess] = useState("");
   const [message, setMessage] = useState("");
 
-
   const [color, setColor] = useState("#111");
   const [eraser, setEraser] = useState(false);
   const [lineWidth, setLineWidth] = useState(3);
   const [eraserWidth, setEraserWidth] = useState(20);
 
-  const colors = ["#111", "#ef4444", "#3b82f6", "#10b981", "#f59e0b", "#8b5cf6"];
+  const colors = ["#111","#ef4444","#3b82f6","#10b981","#f59e0b","#8b5cf6","#ec4899","#f97316","#22c55e","#6366f1","#f43f5e","#06b6d4"];
 
   useEffect(() => {
     setMessage(`${name1} рисует, ${name2} угадывает. Нажми «Очистить», чтобы стереть.`);
@@ -30,7 +29,7 @@ export default function Pictionary({ onBack }) {
     c.width = 900;
     c.height = 520;
     const ctx = c.getContext("2d");
-    ctx.lineWidth = 5;
+    ctx.lineWidth = lineWidth;
     ctx.lineCap = "round";
     ctx.strokeStyle = color;
   }, []);
@@ -71,7 +70,7 @@ export default function Pictionary({ onBack }) {
     <div className="pictionary-container">
       <div className="pictionary-header">
         <h2>Pictionary</h2>
-        <Link to="/"><button className="back-btn" >Назад</button></Link>
+        <Link to="/"><button className="back-btn">Назад</button></Link>
       </div>
 
       <div className="pictionary-info">
@@ -79,21 +78,37 @@ export default function Pictionary({ onBack }) {
       </div>
 
       <div className="pictionary-tools">
-        {colors.map((c) => (
-          <button
-            key={c}
-            onClick={() => { setColor(c); setEraser(false); }}
-            className={`color-btn ${color === c && !eraser ? "selected" : ""}`}
-            style={{ backgroundColor: c }}
-          />
-        ))}
-        <button
-          onClick={() => setEraser(true)}
-          className={`eraser-btn ${eraser ? "selected" : ""}`}
-        >
-          Ластик
-        </button>
-      </div>
+  {colors.map((c) => (
+    <button
+      key={c}
+      onClick={() => { setColor(c); setEraser(false); }}
+      className={`color-btn ${color === c && !eraser ? "selected" : ""}`}
+      style={{ backgroundColor: c }}
+    />
+  ))}
+  <button
+    onClick={() => setEraser(true)}
+    className={`eraser-btn ${eraser ? "selected" : ""}`}
+  >
+    Ластик
+  </button>
+
+  <label>
+    Толщина {eraser ? "ластика" : "кисти"}: 
+    <input 
+      type="range" 
+      min="1" 
+      max="30" 
+      value={eraser ? eraserWidth : lineWidth} 
+      onChange={e => {
+        const val = Number(e.target.value);
+        if (eraser) setEraserWidth(val);
+        else setLineWidth(val);
+      }} 
+    />
+  </label>
+</div>
+
 
       <div className="pictionary-canvas">
         <canvas

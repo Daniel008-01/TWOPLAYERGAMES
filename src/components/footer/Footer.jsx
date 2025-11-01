@@ -2,8 +2,25 @@ import "./footer.css";
 import logo from "../header/logo-Cite.jpg"; 
 import GitHub from './GitHub.png';
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 
 export const Footer = () => {
+  useEffect(() => {
+    const share = document.querySelector(".share");
+
+    const addHover = setTimeout(() => {
+      share.classList.add("hover");
+    }, 1000);
+
+    const removeHover = setTimeout(() => {
+      share.classList.remove("hover");
+    }, 3000);
+
+    return () => {
+      clearTimeout(addHover);
+      clearTimeout(removeHover);
+    };
+  }, []);
   return (
     <footer className="footer container">
       <div className="footer-container">
@@ -11,6 +28,7 @@ export const Footer = () => {
           <img src={logo} alt="Logo" />
         </div>
         <div className="footer-content">
+        
           <div>
             <h4>Навигация</h4>
             <ul>
@@ -42,4 +60,4 @@ export const Footer = () => {
   );
 };
 
-export default Footer;
+  export default Footer;

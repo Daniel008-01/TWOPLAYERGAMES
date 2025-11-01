@@ -1,100 +1,108 @@
 /* Pictionary.scss */
 .pictionary-container {
-    max-width: 900px;
-    margin: 0 auto;
-    font-family: Arial, sans-serif;
-  }
-  
-  .pictionary-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-  }
-  
-  .back-btn {
-    padding: 6px 10px;
-    border: none;
-    border-radius: 6px;
-    background-color: #3b82f6;
-    color: #fff;
-    cursor: pointer;
-  }
-  
-  .back-btn:hover {
-    background-color: #2563eb;
-  }
-  
-  .pictionary-info {
-    margin-bottom: 6px;
-    color: #374151;
-  }
-  
-  .player.blue { color: #3b82f6; font-weight: bold; }
-  .player.red { color: #ef4444; font-weight: bold; }
-  
-  .pictionary-tools {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 8px;
-  }
-  
-  .color-btn, .eraser-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 4px;
-    border: 1px solid #e5e7eb;
-    cursor: pointer;
-  }
-  
-  .color-btn.selected, .eraser-btn.selected {
-    border: 2px solid #000;
-  }
-  
-  .eraser-btn {
-    width: 60px;
-    background-color: #fff;
-    color: black;
-  }
-  
-  .pictionary-canvas {
-    border: 1px solid #e5e7eb;
-    padding: 8px;
-  }
-  
-  .pictionary-canvas canvas {
-    width: 100%;
-    display: block;
-  }
-  
-  .pictionary-controls {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-  }
-  
-  .pictionary-controls input {
-    padding: 6px;
-    border: 1px solid #e5e7eb;
-    flex: 1;
-  }
-  
-  .pictionary-controls button {
-    padding: 6px 10px;
-    border: none;
-    border-radius: 6px;
-    background-color: #2563eb;
-    color: #fff;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-  
-  .pictionary-controls button:hover {
-    transform: scale(1.05);
-  }
-  
-  .pictionary-message {
-    margin-top: 6px;
-    font-weight: bold;
-  }
-  
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+}
+
+.pictionary-header {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.back-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #3b82f6;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.back-btn:hover { background-color: #2563eb; }
+
+.pictionary-info {
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: var(--text-color, #374151);
+}
+
+.player.blue { color: #3b82f6; font-weight: bold; }
+.player.red { color: #ef4444; font-weight: bold; }
+
+.pictionary-tools {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.color-btn, .eraser-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.color-btn.selected, .eraser-btn.selected {
+  border: 2px solid #000;
+}
+.eraser-btn {
+  width: 70px;
+  background-color: #fff;
+  color: black;
+  position: relative;
+  font-size: 0.8rem;
+}
+
+.pictionary-canvas {
+  border: 2px solid #e5e7eb;
+  padding: 4px;
+  background-color: #fff; // фиксируем фон
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.pictionary-canvas canvas {
+  width: 100%;
+  height: 520px;
+  display: block;
+}
+
+.pictionary-controls {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.pictionary-controls input {
+  padding: 6px;
+  border: 1px solid #e5e7eb;
+  flex: 1;
+  border-radius: 6px;
+}
+
+.pictionary-controls button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #2563eb;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.pictionary-controls button:hover {
+  transform: scale(1.05);
+}
+
+.pictionary-message {
+  margin-top: 6px;
+  font-weight: bold;
+  min-height: 20px;
+}

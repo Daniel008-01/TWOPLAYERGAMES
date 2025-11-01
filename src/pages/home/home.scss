@@ -1,56 +1,66 @@
 .cards {
-    background-color: #adacac;
-    border-radius: 50px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    padding: 0;
-    list-style: none;
-    justify-content: center; // выравнивание
+  background-color: #e3ecff;
+  border-radius: 50px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 0;
+  list-style: none;
+  justify-content: center; // выравнивание
+  width: 900px;
+  margin: 0 auto;
+}
+
+// для тёмной темы
+[data-theme="dark"] .cards {
+  background-color: #171717;
+}
+
+
+.home-title {
+  text-align: center;
+  font-size: 2.5rem;
+  margin: 20px 0;
+  font-family: 'MockFlowFont', sans-serif;
+  position: relative;
+  cursor: pointer;
+  color: #6A515E;
+  background: linear-gradient(90deg, #ef087f 0%, #268920 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  // анимация “скользящего света”
+  background-size: 200% auto;
+  animation: shine 3s linear infinite;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    width: 0;
+    height: 2px;
+    background-color: #262626;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+    border-radius: 2px;
   }
 
-  .home-title {
-   
-    text-align: center;
-    font-size: 2.5rem;
-    margin: 20px 0;
-    color: #6A515E;
-    font-family: 'MockFlowFont', sans-serif;
-    position: relative;
-    cursor: pointer;
-  
-    // постоянная анимация — волна
-   
-    animation: wave 3s ease-in-out infinite;
-  
-    // эффект при наведении
-    &::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      bottom: -5px;
-      width: 0;
-      height: 3px;
-      background-color: #6A515E;
-      transition: all 0.4s ease;
-      transform: translateX(-50%);
-      border-radius: 2px;
-    }
-  
-    &:hover::after {
-      width: 80%;
-    }
+  &:hover::after {
+    width: 60%;
   }
-  
-  // 🌊 "волна"
-  @keyframes wave {
-    0% { transform: rotate(0deg); }
-    25% { transform: rotate(2deg); }
-    50% { transform: rotate(0deg); }
-    75% { transform: rotate(-2deg); }
-    100% { transform: rotate(0deg); }
+}
+
+@keyframes shine {
+  0% {
+    background-position: 200% 0;
   }
-  
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+
   .cards li {
     margin-top: 20px;
     margin-bottom: 20px;
@@ -154,7 +164,7 @@
     padding: 10px 20px;
     margin: 10px auto;
     color: #D7BDCA;
-    border: 2px solid currentColor;
+    border: 1px solid currentColor;
     border-radius: 12px;
     font-weight: 600;
     letter-spacing: 1px;
@@ -197,130 +207,240 @@
     --curve: 40;
   }
   
+// 🌞 Светлая тема (по умолчанию)
+:root {
+  --surface-color: #fff;
+  --curve: 40;
+  --text-color: #404040;
+}
 
-// отделение
+// 🌙 Тёмная тема
+[data-theme="dark"] {
+  --surface-color: #262626;   // фон карточек
+  --text-color: #ffffff;      // белый текст
+}
+
+// применяем переменные
+.card__overlay,
+.card__header {
+  background-color: var(--surface-color);
+}
+
+.card__title,
+.home-title,
+.card__status,
+.card__tagline {
+  color: var(--text-color);
+}
+
+/* Общий фон с анимацией */
+[data-theme="dark"] .background {
+  position: fixed; /* всегда за всем */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #0c092a;
+  overflow: hidden;
+  z-index: -1; /* чтобы карточки и футер были поверх */
+}
+
+[data-theme="dark"] .background > span {
+  width: 50vmin;
+  height: 50vmin;
+  border-radius: 50%;
+  position: absolute;
+  animation-name: background_move;
+  animation-duration: 30s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  opacity: 0.2;
+  backface-visibility: hidden;
+}
+
+/* Пример для первых */
+[data-theme="dark"] .background > span:nth-child(1) {
+  color: #5856de;
+  top: 64%;
+  left: 3%;
+  animation-duration: 18.8s;
+  animation-delay: -10.7s;
+  transform-origin: 14vw -22vh;
+  box-shadow: 100vmin 0 20vmin currentColor;
+}
+
+[data-theme="dark"] .background > span:nth-child(2) {
+  color: #c7d6ff;
+  top: 94%;
+  left: 71%;
+  animation-duration: 17.1s;
+  animation-delay: -7.2s;
+  transform-origin: -6vw 11vh;
+  box-shadow: -100vmin 0 16vmin currentColor;
+}
+
+[data-theme="dark"] .background > span:nth-child(3) {
+  color: #c7d6ff;
+  top: 24%;
+  left: 81%;
+  animation-duration: 17.1s;
+  animation-delay: -7.2s;
+  transform-origin: -6vw 11vh;
+  box-shadow: -100vmin 0 16vmin currentColor;
+}
+
+[data-theme="dark"] .background > span:nth-child(4) {
+  color: #c7d6ff;
+  top: 44%;
+  left: 31%;
+  animation-duration: 17.1s;
+  animation-delay: -7.2s;
+  transform-origin: -6vw 11vh;
+  box-shadow: -100vmin 0 16vmin currentColor;
+}
+
+[data-theme="dark"] .background > span:nth-child(5) {
+  color: #c7d6ff;
+  top: 94%;
+  left: 71%;
+  animation-duration: 17.1s;
+  animation-delay: -7.2s;
+  transform-origin: -6vw 11vh;
+  box-shadow: -100vmin 0 16vmin currentColor;
+}
+
+/* остальные nth-child тоже сюда */
+
+@keyframes background_move {
+  0% {
+    transform: rotate(0deg) translateX(0);
+  }
+  100% {
+    transform: rotate(360deg) translateX(0);
+  }
+}
 
 
-  // .home-container {
-  //   padding: 30px;
-  //   background: linear-gradient(135deg, #1f1c2c, #928dab);
-  //   min-height: 100vh;
-  // }
-  
-  // .home-title {
-  //   text-align: center;
-  //   font-size: 3rem;
-  //   color: #fff;
-  //   font-family: 'MockFlowFont', sans-serif;
-  //   margin-bottom: 40px;
-  //   animation: wave 3s ease-in-out infinite;
-  //   text-shadow: 0 0 15px rgba(255,255,255,0.4);
-  // }
-  
-  // @keyframes wave {
-  //   0% { transform: rotate(0deg); }
-  //   25% { transform: rotate(2deg); }
-  //   50% { transform: rotate(0deg); }
-  //   75% { transform: rotate(-2deg); }
-  //   100% { transform: rotate(0deg); }
-  // }
-  
-  // .cards {
-  //   display: flex;
-  //   flex-wrap: wrap;
-  //   gap: 30px;
-  //   justify-content: center;
-  //   list-style: none;
-  //   padding: 0;
-  // }
-  
-  // .card-wrapper {
-  //   flex: 1 1 280px;
-  //   max-width: 320px;
-  // }
-  
-  // .card {
-  //   position: relative;
-  //   border-radius: 20px;
-  //   overflow: hidden;
-  //   cursor: pointer;
-  //   transition: transform 0.3s, box-shadow 0.3s;
-  //   &:hover {
-  //     transform: translateY(-10px);
-  //     box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-  //   }
-  // }
-  
-  // .card__image {
-  //   width: 100%;
-  //   height: 200px;
-  //   object-fit: cover;
-  // }
-  
-  // .card__overlay {
-  //   position: absolute;
-  //   bottom: 0;
-  //   left: 0;
-  //   right: 0;
-  //   background: rgba(0,0,0,0.6);
-  //   color: #fff;
-  //   transform: translateY(100%);
-  //   transition: transform 0.3s ease-in-out;
-  //   padding: 20px;
-  // }
-  
-  // .card:hover .card__overlay {
-  //   transform: translateY(0);
-  // }
-  
-  // .card__header {
-  //   display: flex;
-  //   align-items: center;
-  //   gap: 15px;
-  // }
-  
-  // .card__thumb {
-  //   width: 50px;
-  //   height: 50px;
-  //   border-radius: 50%;
-  //   border: 2px solid #fff;
-  // }
-  
-  // .card__title {
-  //   font-size: 1.2rem;
-  //   margin: 0;
-  // }
-  
-  // .card__status {
-  //   font-size: 0.9rem;
-  //   margin: 2px 0 0;
-  //   color: #ddd;
-  // }
-  
-  // .card__stage {
-  //   text-align: center;
-  //   margin-top: 15px;
-  // }
-  
-  // .card__description {
-  //   padding: 10px 25px;
-  //   border-radius: 12px;
-  //   border: none;
-  //   font-weight: 600;
-  //   color: #fff;
-  //   cursor: pointer;
-  //   font-size: 1rem;
-  //   transition: transform 0.2s, box-shadow 0.2s;
-  //   position: relative;
-  //   overflow: hidden;
-  
-  //   &:hover {
-  //     transform: translateY(-3px);
-  //     box-shadow: 0 5px 20px rgba(0,0,0,0.4);
-  //   }
-  
-  //   &:active {
-  //     transform: scale(0.95);
-  //   }
-  // }
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ============================= */
+/* ☀️ Светлая тема фон */
+[data-theme="light"] .background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #f9f9f9; /* светлый общий фон */
+  overflow: hidden;
+  z-index: -1;
+}
+
+[data-theme="light"] .background > span {
+  width: 50vmin;
+  height: 50vmin;
+  border-radius: 50%;
+  position: absolute;
+  animation-name: background_move;
+  animation-duration: 30s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  opacity: 0.25; /* чуть более заметные */
+  backface-visibility: hidden;
+}
+
+/* Цветные круги для светлой темы */
+[data-theme="light"] .background > span:nth-child(1) {
+  color: #ce4217; /* тёплый оранжевый */
+  top: 64%;
+  left: 3%;
+  animation-duration: 18.8s;
+  animation-delay: -10.7s;
+  transform-origin: 14vw -22vh;
+  box-shadow: 100vmin 0 20vmin currentColor;
+}
+
+[data-theme="light"] .background > span:nth-child(2) {
+  color: #0d8ac4; /* нежный голубой */
+  top: 94%;
+  left: 71%;
+  animation-duration: 17.1s;
+  animation-delay: -7.2s;
+  transform-origin: -6vw 11vh;
+  box-shadow: -100vmin 0 16vmin currentColor;
+}
+
+/* остальные nth-child можно сделать pastel: розовый, салатовый, сиреневый */
+[data-theme="light"] .background > span:nth-child(3) {
+  color: #ed0f0f; /* сиреневый */
+  top: 20%;
+  left: 80%;
+  animation-duration: 22s;
+  animation-delay: -12s;
+  transform-origin: -10vw 30vh;
+  box-shadow: -100vmin 0 18vmin currentColor;
+}
+
+[data-theme="light"] .background > span:nth-child(4) {
+  color: #0eea19; /* мятный */
+  top: 10%;
+  left: 10%;
+  animation-duration: 25s;
+  animation-delay: -8s;
+  transform-origin: 20vw -30vh;
+  box-shadow: 100vmin 0 22vmin currentColor;
+}
+
+[data-theme="light"] .background > span:nth-child(5) {
+  color: #ffd54f; /* мягкий жёлтый */
+  top: 80%;
+  left: 50%;
+  animation-duration: 28s;
+  animation-delay: -15s;
+  transform-origin: -20vw 40vh;
+  box-shadow: -100vmin 0 20vmin currentColor;
+}
+
+/* ============================= */
+/* Анимация вращения */
+@keyframes background_move {
+  0% {
+    transform: rotate(0deg) translateX(0);
+  }
+  100% {
+    transform: rotate(360deg) translateX(0);
+  }
+}

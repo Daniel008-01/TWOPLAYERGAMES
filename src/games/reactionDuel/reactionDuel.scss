@@ -1,11 +1,13 @@
 /* ReactionDuel.scss */
 .reaction-container {
+ 
     max-width: 520px;
     margin: 0 auto;
     font-family: Arial, sans-serif;
   }
   
   .reaction-header {
+    margin-top: 50px;
     display: flex;
     justify-content: space-between;
     align-items: center;

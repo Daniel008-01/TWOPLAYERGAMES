@@ -17,7 +17,7 @@ export default function ChangeNames() {
   };
 
   return (
-    <div className="name-form-container">
+    <div className="name-form-container container">
       <form onSubmit={handleSubmit} className="name-form">
         <h2>Настройте имена игроков</h2>
         <label className="animated-label">

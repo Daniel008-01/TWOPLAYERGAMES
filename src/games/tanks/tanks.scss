@@ -7,8 +7,29 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    width: 900px;
+    margin: 0 auto 20px auto;
+    padding: 15px 25px;
+    border-radius: 20px;
+  
+    /* Стеклянный эффект */
+    background: rgba(255, 255, 255, 0.15); // полупрозрачный фон
+    backdrop-filter: blur(10px); // размытие
+    -webkit-backdrop-filter: blur(10px); // для Safari
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  
+    /* Тень для глубины */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  
+    transition: background 0.3s ease, border 0.3s ease;
+  
+    /* Тёмная тема */
+    [data-theme="dark"] & {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
   }
+  
   
   .title-tank {
     margin: 0;
@@ -69,8 +90,143 @@
         background: #059669;
       }
     }
+    .reset-score {
+      padding: 6px 10px;
+      background: #10b981;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.2s;
+  
+      &:hover {
+        background: #059669;
+      }
+    }
+
+    .reset-settings {
+      padding: 6px 10px;
+      background: #10b981;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.2s;
+  
+      &:hover {
+        background: #059669;
+      }
+    }
+
+    
+    
   }
   
+  .settings-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6); // полупрозрачный фон
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease forwards;
+    z-index: 1000;
+  
+    .settings-content {
+      background-color: var(--settings-bg, #f0e9e9);
+      color: var(--settings-color, #0652cb);
+      padding: 30px;
+      border-radius: 20px;
+      width: 700px;
+      height: 400px;
+      max-width: 90%;
+      max-height: 90%;
+      overflow-y: auto;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      animation: slideDown 0.3s ease forwards;
+      position: relative;
+  
+      .close-modal {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        font-size: 24px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        color: inherit;
+      }
+  
+      h3 {
+        margin-top: 0;
+      }
+  
+      label {
+        display: block;
+        margin-bottom: 10px;
+      }
+.btn-flex{
+display: flex;
+justify-content: space-around;
+      .reset-score {
+        padding: 6px 10px;
+        background: #10b981;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.2s;
+    
+        &:hover {
+          background: #059669;
+        }
+      }
+  
+      .reset-settings {
+        padding: 6px 10px;
+        background: #10b981;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: 0.2s;
+        
+    
+        &:hover {
+          background: #059669;
+        }
+      }
+    }
+  
+      button {
+        margin-top: 10px;
+        cursor: pointer;
+      }
+    }
+  }
+  
+  // Анимации
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideDown {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  
+  // Тёмная тема
+  [data-theme="dark"] .settings-content {
+    --settings-bg: #262626;
+    --settings-color: #fff;
+  }
+  
+
   .scoreboard {
     display: flex;
     gap: 12px;
@@ -78,6 +234,8 @@
   
     canvas {
       border: 1px solid #e5e7eb;
+      width: 900px;
+      margin: 0 auto;
     }
   
     .setings {
@@ -117,13 +275,13 @@
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(255,255,255,0.9);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 20px;
-  
+    transition: background 0.3s ease, color 0.3s ease;
+    
     h1 {
       margin: 0;
     }
@@ -131,33 +289,92 @@
     .overlay-buttons {
       display: flex;
       gap: 10px;
+    }
   
-      .reset-overlay {
+    // по умолчанию (светлая тема)
+    background: rgba(255, 255, 255, 0.9);
+    color: #111; 
+  
+    .reset-overlay, .menu-overlay {
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .overlay-buttons {
+      display: flex;
+      gap: 10px;
+    
+      button {
         padding: 10px 16px;
-        background: #10b981;
-        color: #fff;
-        border: none;
         border-radius: 6px;
         cursor: pointer;
-        transition: 0.2s;
-  
-        &:hover {
-          background: #059669;
+        font-weight: 600;
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
+    
+        // Светлая тема по умолчанию
+        &.reset-overlay {
+          background: #10b981;
+          color: #fff;
+          border-color: #10b981;
+    
+          &:hover {
+            background: #059669;
+            border-color: #059669;
+          }
         }
-      }
-  
-      .menu-overlay {
-        padding: 10px 16px;
-        border: 1px solid #e5e7eb;
-        border-radius: 6px;
-        background: #fff;
-        cursor: pointer;
-        transition: 0.2s;
-  
-        &:hover {
-          background: #f3f4f6;
+    
+        &.menu-overlay {
+          background: #fff;
+          color: #111;
+          border-color: #ccc;
+    
+          &:hover {
+            background: #f3f4f6;
+          }
         }
       }
     }
+    
+    // Тёмная тема
+    [data-theme="dark"] .overlay-buttons button.reset-overlay {
+      background: #059669;
+      color: #fff;
+      border-color: #059669;
+    
+      &:hover {
+        background: #047857;
+        border-color: #047857;
+      }
+    }
+    
+    [data-theme="dark"] .overlay-buttons button.menu-overlay {
+      background: #333;
+      color: #fff;
+      border-color: #555;
+    
+      &:hover {
+        background: #444;
+        border-color: #666;
+      }
+    }
+    
+  }
+  
+  // тёмная тема
+  [data-theme="dark"] .overlay {
+    background: rgba(20, 20, 20, 0.9); // тёмный полупрозрачный фон
+    color: #fff; // белый текст
+  }
+  
+  [data-theme="dark"] .overlay .reset-overlay,
+  [data-theme="dark"] .overlay .menu-overlay {
+    background: #333;
+    color: #fff;
+    border: 1px solid #555;
+  }
+  
+  [data-theme="dark"] .overlay .reset-overlay:hover,
+  [data-theme="dark"] .overlay .menu-overlay:hover {
+    background: #444;
   }
   

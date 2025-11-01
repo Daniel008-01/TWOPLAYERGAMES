@@ -6,6 +6,8 @@ export default function TinyTanks() {
   const name1 = localStorage.getItem("name1") || "Красный";
   const name2 = localStorage.getItem("name2") || "Синий";
 
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
   const canvasRef = useRef(null);
   const requestRef = useRef(null);
 
@@ -15,6 +17,8 @@ export default function TinyTanks() {
   const [speed, setSpeed] = useState(1); // скорость танков
   const [fireCooldown, setFireCooldown] = useState(1000); // мс
   const [turnSpeed, setTurnSpeed] = useState(0.05); // скорость поворота
+
+  
 
   const tanksRef = useRef({
     p1: { x: 100, y: 160, angle: 0, vx: 0, vy: 0, hp: 5, color: "#ef4444" },
@@ -57,6 +61,25 @@ export default function TinyTanks() {
       requestRef.current = null;
     };
   }, [winner, speed, fireCooldown, turnSpeed]); // добавляем turnSpeed
+
+
+
+  useEffect(() => {
+    if (settingsOpen) {
+      // запрет скролла
+      document.body.style.overflow = "hidden";
+    } else {
+      // разрешить скролл
+      document.body.style.overflow = "";
+    }
+  
+    // очистка на случай размонтирования компонента
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [settingsOpen]);
+
+  
 
   // --- клавиши ---
   useEffect(() => {
@@ -248,63 +271,74 @@ return (
       <div className="buton-div">
         <Link to="/"><button className="back-tank">Назад</button></Link>
         <button onClick={reset} className="reset-tank">Сброс игры</button>
-        <button onClick={resetScore} className="reset-score">Сброс счета</button>
         <button onClick={resetSettings} className="reset-settings">Сброс настроек</button>
+        <button onClick={() => setSettingsOpen(true)} className="reset-settings">
+            Показать настройки
+          </button>
       </div>
     </div>
 
     <div className="scoreboard">
       <canvas ref={canvasRef} />
-      <div className="setings">
-        <div className="upr"><b>Управление</b></div>
-        <div className="move">{name1}: W/A/S/D — движение, Space — выстрел</div>
-        <div className="move-2">{name2}: Стрелки — движение, Enter — выстрел</div>
-        <div className="score">Счёт:</div>
-        <div className="name-1">{name1}: {score.p1}</div>
-        <div className="name-2">{name2}: {score.p2}</div>
+      {settingsOpen && (
+        <div className="settings-modal">
+          <div className="settings-content">
+            <button className="close-modal" onClick={() => setSettingsOpen(false)}>×</button>
+            
+            <div className="score-section">
+              <h3 style={{fontSize: "30px"}}>Счёт</h3>
+              <hr />
+              <div style={{fontSize: "20px"}}>{name1}: {score.p1}</div>
+              <div style={{fontSize: "20px"}}>{name2}: {score.p2}</div>
+            </div>
 
-        <div className="speed-control">
-          <label>
-            Скорость танков: {speed.toFixed(2)}
-            <input
-              type="range"
-              min={0.1}
-              max={2.5}
-              step={0.01}
-              value={speed}
-              onChange={(e) => setSpeed(parseFloat(e.target.value))}
-            />
-          </label>
-        </div>
+            <div className="controls-section">
+              <h3 style={{fontSize: "30px"}}>Настройки</h3>
+              <hr />
+              
+              <label>
+                Скорость танков: {speed.toFixed(2)}
+                <input
+                  type="range"
+                  min={0.1}
+                  max={2.5}
+                  step={0.01}
+                  value={speed}
+                  onChange={(e) => setSpeed(parseFloat(e.target.value))}
+                />
+              </label>
 
-        <div className="turnspeed-control">
-          <label>
-            Скорость поворота: {turnSpeed.toFixed(2)}
-            <input
-              type="range"
-              min={0.01}
-              max={0.2}
-              step={0.005}
-              value={turnSpeed}
-              onChange={(e) => setTurnSpeed(parseFloat(e.target.value))}
-            />
-          </label>
-        </div>
+              <label>
+                Скорость поворота: {turnSpeed.toFixed(2)}
+                <input
+                  type="range"
+                  min={0.01}
+                  max={0.2}
+                  step={0.005}
+                  value={turnSpeed}
+                  onChange={(e) => setTurnSpeed(parseFloat(e.target.value))}
+                />
+              </label>
 
-        <div className="cooldown-control">
-          <label>
-            КД стрельбы: {(fireCooldown / 1000).toFixed(2)} c — ({(1000 / fireCooldown).toFixed(2)} )
-            <input
-              type="range"
-              min={100}
-              max={2000}
-              step={10}
-              value={fireCooldown}
-              onChange={(e) => setFireCooldown(Number(e.target.value))}
-            />
-          </label>
+              <label>
+                КД стрельбы: {(fireCooldown / 1000).toFixed(2)} c
+                <input
+                  type="range"
+                  min={100}
+                  max={2000}
+                  step={10}
+                  value={fireCooldown}
+                  onChange={(e) => setFireCooldown(Number(e.target.value))}
+                />
+              </label>
+              <div className="btn-flex">
+              <button onClick={resetScore} className="reset-score">Сброс счета</button>
+              <button onClick={resetSettings} className="reset-settings">Сброс настроек</button>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
 
     {winner && (

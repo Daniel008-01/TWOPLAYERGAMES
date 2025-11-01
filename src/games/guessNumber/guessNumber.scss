@@ -1,89 +1,142 @@
-// GuessNumber.scss
-.game-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: 'Arial', sans-serif;
-    text-align: center;
-  }
-  
-  .title {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
-    text-align: left;
+/* GuessNumber.scss */
 
-  }
+/* Переменные для тем */
+:root {
+  --bg-color: #f0f0f0;
+  --text-color: #111;
+  --glass-bg: rgba(255, 255, 255, 0.2);
+  --input-bg: rgba(255, 255, 255, 0.3);
+  --accent-blue: #3b82f6;
+  --accent-red: #ef4444;
+  --button-bg: #10b981;
+  --button-hover: #059669;
+}
+
+[data-theme="dark"] {
+  --bg-color: #1e1e1e;
+  --text-color: #eee;
+  --glass-bg: rgba(30, 30, 30, 0.4);
+  --input-bg: rgba(255, 255, 255, 0.1);
+  --accent-blue: #3b82f6;
+  --accent-red: #ef4444;
+  --button-bg: #10b981;
+  --button-hover: #059669;
+}
+
+.game-container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+  color: var(--text-color);
+  text-align: center;
   
-  .player {
-    font-weight: bold;
-  }
+  background-color: var(--bg-color);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  backdrop-filter: blur(5px);
+}
+
+/* Заголовок */
+.title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+/* Игроки */
+.player {
+  font-weight: bold;
+}
+
+.blue {
+  color: var(--accent-blue);
+}
+
+.red {
+  color: var(--accent-red);
+}
+
+/* Стеклянные панели для угадывания и загадывания */
+.game-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  border-radius: 20px;
+  width: 100%;
   
-  .blue {
-    color: #3b82f6;
-  }
-  
-  .red {
-    color: #ef4444;
-  }
-  
-  .game-screen {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .game-title {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  input[type="number"] {
-    padding: 6px 10px;
-    font-size: 1rem;
-    width: 120px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    text-align: center;
-  }
-  
-  button {
-    padding: 6px 12px;
-    margin-top: 10px;
-    border: none;
-    border-radius: 6px;
-    background-color: #10b981;
-    color: #fff;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: transform 0.2s, background 0.2s;
-  }
-  
-  button:hover {
-    transform: scale(1.05);
-    background-color: #059669;
-  }
-  
-  .log {
-    text-align: left;
-    max-height: 200px;
-    overflow-y: auto;
-    padding: 0;
-    list-style: none;
-  }
-  
-  .log li {
-    padding: 4px 0;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .back-btn {
-    margin-top: 20px;
-    background-color: #3b82f6;
-  }
-  
-  .back-btn:hover {
-    background-color: #2563eb;
-  }
-  
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.game-title {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+/* Поле ввода */
+input[type="number"] {
+  padding: 8px 12px;
+  font-size: 1rem;
+  width: 120px;
+  border: none;
+  border-radius: 10px;
+  text-align: center;
+  background: var(--input-bg);
+  color: var(--text-color);
+  outline: none;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Кнопки */
+button {
+  padding: 8px 14px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 10px;
+  background-color: var(--button-bg);
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+
+button:hover {
+  transform: scale(1.05);
+  background-color: var(--button-hover);
+}
+
+/* История ходов */
+.log {
+  text-align: left;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 10px;
+  border-radius: 15px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+  list-style: none;
+  margin-bottom: 20px;
+}
+
+.log li {
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+/* Кнопка назад */
+.back-btn {
+  background-color: var(--accent-blue);
+  margin-top: 20px;
+}
+
+.back-btn:hover {
+  background-color: #2563eb;
+}
+
+

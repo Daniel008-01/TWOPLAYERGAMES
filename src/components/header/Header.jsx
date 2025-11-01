@@ -1,22 +1,44 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import logo from './logo-Cite.jpg'
-import './header.css'
-import  { Link } from 'react-router-dom'
+import './header.scss'
+import { Link } from 'react-router-dom'
 
+export default function Header({ onToggleTheme, theme }) {
+  const [scrolled, setScrolled] = useState(false)
 
-export default function Header({ onBack ,  }) {
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50)
+    }
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  const handleThemeChange = (e) => {
+    onToggleTheme(e.target.checked ? "dark" : "light")
+  }
+
   return (
-    <div className="header">
-        <div className='logo'> 
-            <Link to="/"><img src={logo} alt="logo"  style={{cursor: 'pointer'}}/></Link>
-        </div>
-        <div className="header-title">
-          <p className='header-title'>TWO PLAYER GAME</p>
-        </div>
-        <div className='header-btns'>
-            <p  className='btn btn-2'><Link to="/">hub</Link></p>
-            <p  className='btn btn-2' ><Link to="/change-names">switch</Link></p>
-        </div>
+    <div className={`header ${scrolled ? "scrolled" : ""}`}>
+      <div className='logo'>
+        <Link to="/"><img src={logo} alt="logo" style={{ cursor: 'pointer' }} /></Link>
+      </div>
+      <div className="header-title-div">
+        <p className='header-title-text'>TWO PLAYER GAME</p>  
+      </div>
+      <div className='header-btns'>
+        {/* Новый переключатель темы */}
+        <input
+          type="checkbox"
+          role="switch"
+          className="dark-2"
+          checked={theme === "dark"}
+          onChange={handleThemeChange}
+        />
+
+        <p className='btn btn-2'><Link to="/">hub</Link></p>
+        <p className='btn btn-2'><Link to="/change-names">switch</Link></p>
+      </div>
     </div>
   )
 }

@@ -2,9 +2,66 @@
   margin: 0 auto;
   max-width: 1220px;
   width: 100%;
+  padding-top: 50px;
 }
+
+
 
 a{
   text-decoration: none;
-  color: black;
+
+}
+
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --accent-color: #007bff;
+}
+
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --text-color: #f5f5f5;   /* светлый текст для тёмного фона */
+  --accent-color: #ff4081;
+}
+
+:root {
+  --header-text: #000000;
+  --header-border: rgba(0,0,0,0.8);
+  --header-btn-color: #000000;
+  --header-bg: transparent;
+  --header-bg-scrolled: rgba(255,255,255,0.15);
+}
+
+[data-theme="dark"] {
+  --header-text: #ffffff;
+  --header-border: rgba(255,255,255,0.85);
+  --header-btn-color: #ffffff;
+  --header-bg: transparent;
+  --header-bg-scrolled: rgba(17,24,39,0.6); /* тёмный «стеклянный» фон при скролле */
+}
+
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+
+/* Пример для заголовков и параграфов */
+h1, h2, h3, h4, h5, h6,
+p, span, a, li {
+  color: var(--text-color);
+}
+
+/* Если есть специальные классы */
+.title {
+  color: var(--text-color);
+}
+
+.header-title {
+  color: var(--text-color);
+}
+
+.link {
+  color: var(--accent-color);
 }

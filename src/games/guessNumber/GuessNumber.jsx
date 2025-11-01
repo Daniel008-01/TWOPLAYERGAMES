@@ -1,4 +1,3 @@
-// Game.jsx
 import { useEffect, useState } from "react";
 import "./guessNumber.scss";
 import { Link } from "react-router-dom";
@@ -7,25 +6,32 @@ export default function Game({ onBack }) {
   const storedName1 = localStorage.getItem("name1") || "Красный";
   const storedName2 = localStorage.getItem("name2") || "Синий";
 
-  const [secret, setSecret] = useState(null); 
-  const [secretInput, setSecretInput] = useState(""); 
-  const [guess, setGuess] = useState(""); 
-  const [log, setLog] = useState([]); 
-  const [attempt, setAttempt] = useState(1); 
+  const [secret, setSecret] = useState(null);
+  const [secretInput, setSecretInput] = useState("");
+  const [guess, setGuess] = useState("");
+  const [log, setLog] = useState([]);
+  const [attempt, setAttempt] = useState(1);
+  const [maxAttempts, setMaxAttempts] = useState(5); // новое: максимальные попытки
   const [name1, setName1] = useState(storedName1);
   const [name2, setName2] = useState(storedName2);
+  const [gameOver, setGameOver] = useState(false);
 
-  // Игрок 1 загадывает число
+  // Игрок 1 загадывает число и указывает max попытки
   function startSecret() {
     const num = Number(secretInput);
     if (!Number.isInteger(num) || num < 0 || num > 100) {
       alert("Введите целое число от 0 до 100");
       return;
     }
+    if (!Number.isInteger(maxAttempts) || maxAttempts < 1) {
+      alert("Введите корректное количество попыток (от 1 и выше)");
+      return;
+    }
     setSecret(num);
     setLog([]);
     setAttempt(1);
     setSecretInput("");
+    setGameOver(false);
   }
 
   // Игрок 2 угадывает
@@ -39,19 +45,32 @@ export default function Game({ onBack }) {
     if (Number.isNaN(g)) return;
 
     const res = g === secret ? "Верно!" : g < secret ? "Больше" : "Меньше";
-
     setLog((l) => [{ attempt, guess: g, res }, ...l]);
 
     if (res === "Верно!") {
       alert(`${name2} угадал число за ${attempt} попыток!`);
-      setSecret(null);
-      setGuess("");
-      setLog([]);
+      setGameOver(true);
+      return;
+    }
+
+    if (attempt >= maxAttempts) {
+      alert(`${name2} не угадал число! Победил ${name1}`);
+      setGameOver(true);
       return;
     }
 
     setAttempt((a) => a + 1);
     setGuess("");
+  }
+
+  function resetGame() {
+    setSecret(null);
+    setSecretInput("");
+    setGuess("");
+    setLog([]);
+    setAttempt(1);
+    setGameOver(false);
+    setMaxAttempts(5);
   }
 
   return (
@@ -73,13 +92,21 @@ export default function Game({ onBack }) {
             onChange={(e) => setSecretInput(e.target.value)}
             placeholder="0-100"
           />
-          <button onClick={startSecret}>Загадать</button>
+          <input
+            type="number"
+            value={maxAttempts}
+            onChange={(e) => setMaxAttempts(Number(e.target.value))}
+            placeholder="Количество попыток"
+            min={1}
+          />
+          <button onClick={startSecret} className="done">Загадать</button>
         </div>
-      ) : (
+      ) : !gameOver ? (
         <div className="game-screen">
           <h3 className="game-title">
             <span className="player red">{name2}</span>, угадай число
           </h3>
+          <p>Попытка {attempt} из {maxAttempts}</p>
           <input
             type="number"
             value={guess}
@@ -87,6 +114,13 @@ export default function Game({ onBack }) {
             placeholder="0-100"
           />
           <button onClick={tryGuess}>Угадать</button>
+        </div>
+      ) : (
+        <div className="game-screen">
+          <h3 className="game-title">
+            Игра окончена!
+          </h3>
+          <button onClick={resetGame} className="done">Играть заново</button>
         </div>
       )}
 
@@ -99,9 +133,8 @@ export default function Game({ onBack }) {
         ))}
       </ul>
 
-      <Link to="/"><button className="back-btn" >
-        Назад
-      </button></Link>
+      <Link to="/"><button className="back-btn">Назад</button></Link>
+      <button onClick={resetGame} className="done" style={{marginLeft: "10px"}}>Играть заново</button>
     </div>
   );
 }

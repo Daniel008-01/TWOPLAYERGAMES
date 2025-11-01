@@ -16,11 +16,11 @@ export default function About() {
                 <img className="about-card__thumb" src={daniel} alt="Daniel" />
                 <div className="about-card__header-text">
                   <h3 className="about-card__title">Даниель</h3>            
-                  <p className="about-card__status">возраст: 17 лет</p>
+                  <p className="about-card__status">Возраст: 17 лет</p>
                 </div>
               </div>
               <p className="about-card__description">
-                Доп Инфо: разработка стилей всего проекта создание игр : кубик(залипаем), игра в кальмара , змейка 2 на 2 а также собрал весь проект сделал футер и хедер<br/> tg: @erfs_cm
+                Полностью разработал и собрал проект, включая все игры и функциональные страницы. Автор игр "Кубик", "Змейка 1 на 1", "Игра в кальмара". Создал полностью дизайн проекта, включая хедер, футер и главную страницу, реализовал смену ников.
               </p>
             </div>
           </a>      
@@ -34,12 +34,12 @@ export default function About() {
                 <svg className="about-card__arc" xmlns="http://www.w3.org/2000/svg"><path /></svg>                 
                 <img className="about-card__thumb" src={emir} alt="Emir" />
                 <div className="about-card__header-text">
-                  <h3 className="about-card__title">Emir</h3>
-                  <p className="about-card__status">возраст: 14 лет</p>
+                  <h3 className="about-card__title">Эмир</h3>
+                  <p className="about-card__status">Возраст: 14 лет</p>
                 </div>
               </div>
               <p className="about-card__description">
-                Доп Инфо: создание игр : танчики, угадай число, гонки, Reaction Duel, Pictionary , крестики нолики а также деплой проекта <br/> tg: @marashtg
+                Разработал игры "Танчики", "Угадай число", "Дуель реакции", "Pictionary", "Крестики-нолики". Отвечал за деплой проекта и оформление игровых интерфейсов, а также логику созданных игр.
               </p>
             </div>
           </a>
