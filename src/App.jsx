@@ -22,6 +22,8 @@ import Cube from "./games/cube/Cube.jsx";
 import Snake from "./games/snake/Snake.jsx";
 import Race from "./games/Race/Race.jsx";
 import SquidGame from "./games/squidGame/SquidGame.jsx";
+import Pvz from "./games/pvz/Pvz.jsx";
+import RedBall from "./games/redball/RedBall.jsx";
 
 export default function App() {
   // состояние для темы
@@ -84,6 +86,8 @@ export default function App() {
         <Route path="/snake" element={<Snake />} />
         <Route path="/race" element={<Race />} />
         <Route path="/squid" element={<SquidGame />} />
+        <Route path="/pvz" element={<Pvz />} />
+        <Route path="/redball" element={<RedBall />} />
 
         {/* инфо */}
         <Route path="/about" element={<About />} />

@@ -26,6 +26,8 @@ export default function Home() {
     { title: "Кубик", description: "Залипаем", color: "lightgreen", path: "/cube", img: game },
     { title: "змейка", description: "Играем в змейку 1 х 1", color: "lightpink", path: "/snake", img: game },
     { title: "squid", description: "Игра в кальмара", color: "lightyellow", path: "/squid", img:game },
+    { title: "Plants vs Zombies", description: "Защити дом от зомби", color: "#4CAF50", path: "/pvz", img: game },
+    { title: "Red Ball", description: "Прыгай и собирай флаги", color: "#F44336", path: "/redball", img: game },
     { title: "cosmoss", description: "Мечта", color: "lightyellow", path: "http://127.0.0.1:5500/Twoplayergames/src/games/cosmos/cosmosy.html", img:game },
    
    

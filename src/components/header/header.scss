@@ -53,7 +53,7 @@
     
       &:hover {
         text-shadow: 0 0 10px #3b82f6, 0 0 20px #9333ea, 0 0 30px #06b6d4;
-        transform: scale(1.05);
+        transform: scale(1.05); 
       }
     }
     
@@ -280,6 +280,9 @@
   border-color: #fff;
   transition: width 350ms ease-in-out;
   width: 70%;
+
+
+  
 }
 
 .btn-2:hover:before {
@@ -291,7 +294,7 @@
 
 
 
-
+  
 
 
 
@@ -326,7 +329,7 @@
 }
 
 @property --c4 {
-  syntax: '<color>';
+  syntax: '<color>';  
   inherits: true;
   initial-value: #593d92;
 }

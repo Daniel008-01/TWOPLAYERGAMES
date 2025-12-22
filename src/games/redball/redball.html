@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Red Ball Clone - Final Fix</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #222;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        canvas {
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            background-color: #87CEEB;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="gameCanvas" width="800" height="600"></canvas>
+
+<script>
+// --- КОНФИГУРАЦИЯ ---
+const CANVAS_WIDTH = 800;
+const CANVAS_HEIGHT = 600;
+const GRAVITY = 0.6;          // Гравитация чуть тяжелее для приятного ощущения
+const FRICTION = 0.85;        // Трение воздуха
+const ACCELERATION = 0.8;     // Скорость разгона
+const JUMP_FORCE = -14;       // Сила прыжка
+const BALL_RADIUS = 25;
+
+// --- СИСТЕМА УПРАВЛЕНИЯ (WASD) ---
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+let keys = { w: false, a: false, d: false, s: false };
+let currentLevelIdx = 0;
+let cameraX = 0;
+
+window.addEventListener('keydown', (e) => {
+    let code = e.code;
+    if(code === "KeyW" || code === "Space") keys.w = true;
+    if(code === "KeyA") keys.a = true;
+    if(code === "KeyD") keys.d = true;
+    if(code === "KeyS") keys.s = true;
+});
+
+window.addEventListener('keyup', (e) => {
+    let code = e.code;
+    if(code === "KeyW" || code === "Space") keys.w = false;
+    if(code === "KeyA") keys.a = false;
+    if(code === "KeyD") keys.d = false;
+    if(code === "KeyS") keys.s = false;
+});
+
+// --- КЛАССЫ СУЩНОСТЕЙ ---
+
+class Vector {
+    constructor(x, y) { this.x = x; this.y = y; }
+}
+
+class Entity {
+    constructor(x, y, w, h, type) {
+        this.pos = new Vector(x, y);
+        this.vel = new Vector(0, 0);
+        this.w = w;
+        this.h = h;
+        this.type = type; 
+        this.active = true;
+        this.seed = Math.random(); 
+    }
+}
+
+class Player extends Entity {
+    constructor(x, y) {
+        super(x, y, BALL_RADIUS * 2, BALL_RADIUS * 2, 'player');
+        this.radius = BALL_RADIUS;
+        this.rotation = 0;
+        this.hp = 3;
+        this.invulnerable = 0;
+        
+        // Логика прыжка
+        this.grounded = false;
+        this.coyoteTime = 0; // Таймер, позволяющий прыгнуть сразу после схода с платформы
+    }
+
+    update() {
+        // 1. Горизонтальное движение
+        if (keys.d) this.vel.x += ACCELERATION;
+        if (keys.a) this.vel.x -= ACCELERATION;
+
+        this.vel.x *= FRICTION;
+        this.pos.x += this.vel.x;
+
+        // Вращение (визуальное)
+        this.rotation += this.vel.x / this.radius;
+
+        // 2. Вертикальное движение (Гравитация)
+        this.vel.y += GRAVITY;
+        this.pos.y += this.vel.y;
+
+        // Уменьшаем таймер "койота"
+        if (this.coyoteTime > 0) this.coyoteTime--;
+
+        // 3. Прыжок (Если таймер койота активен)
+        if (keys.w && this.coyoteTime > 0) {
+            this.vel.y = JUMP_FORCE;
+            this.coyoteTime = 0; // Сбрасываем таймер, чтобы нельзя было прыгнуть дважды
+            this.grounded = false;
+        }
+
+        if (this.invulnerable > 0) this.invulnerable--;
+        
+        // Смерть от падения
+        if (this.pos.y > CANVAS_HEIGHT + 300) {
+            resetLevel();
+        }
+    }
+}
+
+class Enemy extends Entity {
+    constructor(x, y, range) {
+        super(x, y, 50, 50, 'enemy');
+        this.startPos = x;
+        this.range = range;
+        this.speed = 2;
+        this.dir = 1;
+    }
+
+    update() {
+        if (!this.active) return;
+        this.pos.x += this.speed * this.dir;
+        if (this.pos.x > this.startPos + this.range) this.dir = -1;
+        if (this.pos.x < this.startPos) this.dir = 1;
+    }
+}
+
+class Crate extends Entity {
+    constructor(x, y) {
+        super(x, y, 60, 60, 'crate');
+    }
+    
+    update() {
+        // Физика ящика
+        this.vel.x *= 0.85; // Трение ящика о землю
+        this.vel.y += GRAVITY;
+        
+        this.pos.x += this.vel.x;
+        this.pos.y += this.vel.y;
+    }
+}
+
+// --- УРОВНИ ---
+
+let player;
+let entities = [];
+let particles = []; 
+
+const LEVELS = [
+    {
+        // Уровень 1: Основы
+        init: () => {
+            entities = [];
+            entities.push(new Entity(0, 500, 400, 100, 'ground'));
+            entities.push(new Entity(550, 450, 400, 150, 'ground')); 
+            entities.push(new Entity(1050, 500, 800, 100, 'ground')); 
+            entities.push(new Entity(-50, 0, 50, 600, 'ground'));
+            entities.push(new Entity(1700, 400, 50, 100, 'flag'));
+            player = new Player(100, 300);
+        }
+    },
+    {
+        // Уровень 2: Враги и холмы
+        init: () => {
+            entities = [];
+            entities.push(new Entity(0, 500, 300, 100, 'ground'));
+            entities.push(new Entity(350, 500, 100, 100, 'ground'));
+            entities.push(new Entity(450, 450, 100, 150, 'ground'));
+            entities.push(new Entity(550, 400, 600, 200, 'ground')); 
+            entities.push(new Enemy(600, 350, 400)); 
+            entities.push(new Entity(1200, 500, 400, 100, 'ground'));
+            entities.push(new Entity(1500, 400, 50, 100, 'flag'));
+            player = new Player(50, 300);
+        }
+    },
+    {
+        // Уровень 3: Пазл с ящиком
+        init: () => {
+            entities = [];
+            entities.push(new Entity(0, 500, 800, 100, 'ground'));
+            entities.push(new Crate(400, 400));
+            entities.push(new Entity(700, 250, 100, 350, 'ground')); // Стена
+            entities.push(new Entity(800, 250, 600, 350, 'ground'));
+            entities.push(new Entity(1300, 150, 50, 100, 'flag'));
+            player = new Player(100, 300);
+        }
+    }
+];
+
+function loadLevel(idx) {
+    if (idx >= LEVELS.length) {
+        alert("ПОЗДРАВЛЯЮ! Все уровни пройдены.");
+        idx = 0;
+    }
+    currentLevelIdx = idx;
+    LEVELS[idx].init();
+    cameraX = 0;
+}
+
+function resetLevel() {
+    loadLevel(currentLevelIdx);
+}
+
+// --- ФИЗИЧЕСКИЙ ДВИЖОК ---
+
+function checkRectCollision(rect1, rect2) {
+    return (rect1.pos.x < rect2.pos.x + rect2.w &&
+            rect1.pos.x + rect1.w > rect2.pos.x &&
+            rect1.pos.y < rect2.pos.y + rect2.h &&
+            rect1.pos.y + rect1.h > rect2.pos.y);
+}
+
+function resolveCircleRect(circle, rect, isMovableCrate = false) {
+    // Находим ближайшую точку прямоугольника к центру круга
+    let closestX = Math.max(rect.pos.x, Math.min(circle.pos.x, rect.pos.x + rect.w));
+    let closestY = Math.max(rect.pos.y, Math.min(circle.pos.y, rect.pos.y + rect.h));
+
+    let dx = circle.pos.x - closestX;
+    let dy = circle.pos.y - closestY;
+    let distance = Math.sqrt(dx * dx + dy * dy);
+
+    // Если есть пересечение
+    if (distance < circle.radius) {
+        let overlap = circle.radius - distance;
+        
+        // Нормаль столкновения (направление отталкивания)
+        let nx = dx / distance;
+        let ny = dy / distance;
+        
+        // Обработка центрального случая
+        if (distance === 0) { nx = 0; ny = -1; overlap = circle.radius; }
+
+        // --- ЛОГИКА ВЗАИМОДЕЙСТВИЯ ---
+
+        // 1. Если это ЯЩИК и мы толкаем его сбоку
+        if (isMovableCrate && Math.abs(nx) > 0.7) {
+            // Передаем импульс ящику
+            rect.vel.x += circle.vel.x * 0.5; // Ящик получает скорость
+            circle.vel.x *= 0.5; // Игрок немного замедляется, но не стопится
+            
+            // Минимальное отталкивание, чтобы не проходить сквозь
+            circle.pos.x += nx * (overlap * 0.2); 
+            return;
+        }
+
+        // 2. Обычное столкновение (Земля или верх ящика)
+        circle.pos.x += nx * overlap;
+        circle.pos.y += ny * overlap;
+
+        // Если ударились полом (нормаль вверх)
+        if (ny < -0.5) { 
+            circle.vel.y = 0;
+            circle.grounded = true;
+            circle.coyoteTime = 10; // ДАЕМ ЗАПАС ВРЕМЕНИ ДЛЯ ПРЫЖКА (10 кадров)
+        }
+        // Если ударились потолком
+        else if (ny > 0.5) {
+            circle.vel.y = 0;
+        }
+        // Если ударились стеной
+        if (Math.abs(nx) > 0.7) { 
+            circle.vel.x = 0;
+        }
+    }
+}
+
+function resolveRectRect(r1, r2) {
+    if (checkRectCollision(r1, r2)) {
+        let overlapX = (r1.w/2 + r2.w/2) - Math.abs((r1.pos.x + r1.w/2) - (r2.pos.x + r2.w/2));
+        let overlapY = (r1.h/2 + r2.h/2) - Math.abs((r1.pos.y + r1.h/2) - (r2.pos.y + r2.h/2));
+
+        if (overlapX < overlapY) {
+            if (r1.pos.x < r2.pos.x) r1.pos.x -= overlapX;
+            else r1.pos.x += overlapX;
+            r1.vel.x = 0;
+        } else {
+            if (r1.pos.y < r2.pos.y) {
+                r1.pos.y -= overlapY;
+            } else {
+                r1.pos.y += overlapY;
+            }
+            r1.vel.y = 0;
+        }
+    }
+}
+
+function updatePhysics() {
+    // Сбрасываем флаг земли перед проверками
+    // Но мы не сбрасываем coyoteTime, он тикает сам по себе
+    
+    player.update();
+    
+    entities.forEach(e => {
+        if (e.type === 'crate') e.update();
+        if (e.type === 'enemy') e.update();
+    });
+
+    // 1. Игрок vs Земля
+    entities.forEach(e => {
+        if (e.type === 'ground') {
+            resolveCircleRect(player, e, false);
+        }
+    });
+
+    // 2. Ящики vs Земля
+    entities.forEach(crate => {
+        if (crate.type === 'crate') {
+            entities.forEach(ground => {
+                if (ground.type === 'ground') {
+                    resolveRectRect(crate, ground);
+                }
+            });
+        }
+    });
+
+    // 3. Игрок vs Ящик (с флагом isMovableCrate = true)
+    entities.forEach(crate => {
+        if (crate.type === 'crate') {
+            resolveCircleRect(player, crate, true);
+        }
+    });
+
+    // 4. Игрок vs Враг
+    entities.forEach(enemy => {
+        if (enemy.type === 'enemy' && enemy.active) {
+            // Простая проверка прямоугольником для начала
+            if (player.pos.x + player.radius > enemy.pos.x &&
+                player.pos.x - player.radius < enemy.pos.x + enemy.w &&
+                player.pos.y + player.radius > enemy.pos.y &&
+                player.pos.y - player.radius < enemy.pos.y + enemy.h) {
+                
+                // Проверка удара сверху (прыжок на голову)
+                // Игрок должен падать (vel.y > 0) и быть выше врага
+                if (player.vel.y > 0 && player.pos.y < enemy.pos.y + 20) {
+                    enemy.active = false;
+                    player.vel.y = -8; // Отскок
+                    player.coyoteTime = 5; // Можно сделать двойной прыжок от врага
+                    // Эффекты
+                    for(let i=0; i<10; i++) particles.push({x: enemy.pos.x+25, y:enemy.pos.y+25, vx: (Math.random()-0.5)*10, vy: (Math.random()-0.5)*10, life: 30, color: '#212121'});
+                } 
+                // Получение урона
+                else if (player.invulnerable === 0) {
+                    player.hp--;
+                    player.invulnerable = 60; // 1 секунда неуязвимости
+                    // Отталкивание
+                    player.vel.x = (player.pos.x < enemy.pos.x) ? -10 : 10;
+                    player.vel.y = -5;
+                    
+                    if (player.hp <= 0) resetLevel();
+                }
+            }
+        }
+    });
+
+    // 5. Флаг (Финиш)
+    entities.forEach(flag => {
+        if (flag.type === 'flag') {
+            if (Math.abs(player.pos.x - flag.pos.x) < 50 && Math.abs(player.pos.y - flag.pos.y) < 100) {
+                loadLevel(currentLevelIdx + 1);
+            }
+        }
+    });
+
+    // Обновление Камеры (Плавное слежение)
+    let targetCamX = player.pos.x - CANVAS_WIDTH * 0.4;
+    if (targetCamX < 0) targetCamX = 0; // Не уходить за левый край
+    // Плавная интерполяция
+    cameraX += (targetCamX - cameraX) * 0.1;
+
+    // Частицы
+    particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
+    });
+    particles = particles.filter(p => p.life > 0);
+}
+
+// --- ОТРИСОВКА (ГРАФИКА RED BALL) ---
+
+function drawSky() {
+    let grad = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT);
+    grad.addColorStop(0, '#1E88E5'); 
+    grad.addColorStop(1, '#87CEEB'); 
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+    // Солнце
+    ctx.save();
+    ctx.shadowBlur = 40;
+    ctx.shadowColor = "yellow";
+    ctx.fillStyle = "#FFEB3B";
+    ctx.beginPath();
+    ctx.arc(700, 80, 50, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+
+    // Облака
+    ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+    const drawCloud = (x, y, scale) => {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(scale, scale);
+        ctx.beginPath();
+        ctx.arc(0, 0, 30, 0, Math.PI * 2);
+        ctx.arc(25, -10, 35, 0, Math.PI * 2);
+        ctx.arc(50, 0, 30, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    };
+    drawCloud(100, 100, 1);
+    drawCloud(300, 150, 0.8);
+    drawCloud(600, 80, 1.2);
+}
+
+function drawTerrain(entity) {
+    let x = entity.pos.x - cameraX;
+    let y = entity.pos.y;
+    let w = entity.w;
+    let h = entity.h;
+
+    // Оптимизация: не рисовать то, что за экраном
+    if (x + w < 0 || x > CANVAS_WIDTH) return;
+
+    // Земля
+    ctx.fillStyle = "#5D4037";
+    ctx.fillRect(x, y, w, h);
+
+    // Камушки в земле
+    ctx.fillStyle = "#3E2723";
+    let r = entity.seed * 1000;
+    for(let i=0; i<w/20; i++) {
+        for(let j=0; j<h/20; j++) {
+            if (Math.sin(r + i*13 + j*7) > 0.8) {
+                let px = x + i*20 + Math.cos(r)*10;
+                let py = y + j*20 + Math.sin(r)*10;
+                if(px < x+w && py < y+h && px > x && py > y + 20) {
+                     ctx.beginPath();
+                     ctx.arc(px, py, 4, 0, Math.PI*2);
+                     ctx.fill();
+                }
+            }
+        }
+    }
+
+    // Трава сверху (волнистая)
+    ctx.fillStyle = "#76FF03";
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    let waveWidth = 20;
+    for (let i = 0; i < w; i += waveWidth) {
+        ctx.quadraticCurveTo(x + i + waveWidth/2, y - 10, x + i + waveWidth, y);
+    }
+    ctx.lineTo(x + w, y + 20);
+    ctx.lineTo(x, y + 20);
+    ctx.fill();
+}
+
+function drawCrate(crate) {
+    let x = crate.pos.x - cameraX;
+    let y = crate.pos.y;
+    
+    ctx.fillStyle = "#8D6E63"; 
+    ctx.fillRect(x, y, crate.w, crate.h);
+    
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#4E342E";
+    ctx.strokeRect(x, y, crate.w, crate.h);
+    
+    // Крест на ящике
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + crate.w, y + crate.h);
+    ctx.moveTo(x + crate.w, y);
+    ctx.lineTo(x, y + crate.h);
+    ctx.stroke();
+    
+    ctx.strokeRect(x+10, y+10, crate.w-20, crate.h-20);
+}
+
+function drawEnemy(enemy) {
+    if (!enemy.active) return;
+    let x = enemy.pos.x - cameraX;
+    let y = enemy.pos.y;
+
+    // Черный квадрат
+    ctx.fillStyle = "#212121";
+    ctx.fillRect(x, y, enemy.w, enemy.h);
+
+    // Глаза
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.arc(x + 15, y + 20, 8, 0, Math.PI*2);
+    ctx.arc(x + 35, y + 20, 8, 0, Math.PI*2);
+    ctx.fill();
+
+    // Зрачки
+    ctx.fillStyle = "black";
+    ctx.beginPath();
+    ctx.arc(x + 15 + enemy.dir*2, y + 20, 3, 0, Math.PI*2); 
+    ctx.arc(x + 35 + enemy.dir*2, y + 20, 3, 0, Math.PI*2);
+    ctx.fill();
+
+    // Злые брови
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(x + 5, y + 12);
+    ctx.lineTo(x + 20, y + 20); 
+    ctx.moveTo(x + 45, y + 12);
+    ctx.lineTo(x + 30, y + 20); 
+    ctx.stroke();
+
+    // Зубы
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.moveTo(x + 15, y + 35);
+    ctx.lineTo(x + 20, y + 45);
+    ctx.lineTo(x + 25, y + 35);
+    ctx.lineTo(x + 30, y + 45);
+    ctx.lineTo(x + 35, y + 35);
+    ctx.fill();
+}
+
+function drawFlag(flag) {
+    let x = flag.pos.x - cameraX;
+    let y = flag.pos.y;
+
+    ctx.fillStyle = "#555";
+    ctx.fillRect(x, y, 5, 100);
+
+    ctx.fillStyle = "#D32F2F"; 
+    ctx.beginPath();
+    ctx.moveTo(x+5, y);
+    ctx.lineTo(x+50, y+25);
+    ctx.lineTo(x+5, y+50);
+    ctx.fill();
+}
+
+function drawPlayer() {
+    let cx = player.pos.x - cameraX;
+    let cy = player.pos.y;
+
+    // Мигание при уроне
+    if (player.invulnerable > 0 && Math.floor(Date.now() / 50) % 2 === 0) return;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(player.rotation);
+
+    // Тело
+    ctx.fillStyle = "#F44336";
+    ctx.beginPath();
+    ctx.arc(0, 0, player.radius, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Обводка
+    ctx.strokeStyle = "#000";
+    ctx.lineWidth = 4;
+    ctx.stroke();
+
+    // Лицо
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.arc(10, -5, 8, 0, Math.PI*2); 
+    ctx.arc(-5, -5, 8, 0, Math.PI*2); 
+    ctx.fill();
+    
+    ctx.fillStyle = "black";
+    ctx.beginPath();
+    ctx.arc(12, -5, 3, 0, Math.PI*2);
+    ctx.arc(-3, -5, 3, 0, Math.PI*2);
+    ctx.fill();
+
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(5, 5, 10, 0.2, Math.PI - 0.2); 
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+function drawUI() {
+    // Жизни (Сердечки)
+    ctx.fillStyle = "#F44336";
+    for(let i=0; i<player.hp; i++) {
+        let hx = 30 + i * 35;
+        let hy = 30;
+        ctx.beginPath();
+        let topCurveHeight = 10;
+        ctx.moveTo(hx, hy + topCurveHeight);
+        ctx.bezierCurveTo(hx, hy, hx - 15, hy, hx - 15, hy + topCurveHeight);
+        ctx.bezierCurveTo(hx - 15, hy + (topCurveHeight + 10), hx, hy + (topCurveHeight + 20), hx, hy + (topCurveHeight + 20));
+        ctx.bezierCurveTo(hx, hy + (topCurveHeight + 20), hx + 15, hy + (topCurveHeight + 10), hx + 15, hy + topCurveHeight);
+        ctx.bezierCurveTo(hx + 15, hy, hx, hy, hx, hy + topCurveHeight);
+        ctx.fill();
+    }
+    
+    ctx.fillStyle = "black";
+    ctx.font = "bold 20px Arial";
+    ctx.fillText("Уровень: " + (currentLevelIdx + 1), 680, 40);
+}
+
+function draw() {
+    drawSky();
+    entities.forEach(e => {
+        if (e.type === 'ground') drawTerrain(e);
+        if (e.type === 'flag') drawFlag(e);
+        if (e.type === 'crate') drawCrate(e);
+        if (e.type === 'enemy') drawEnemy(e);
+    });
+    drawPlayer();
+    particles.forEach(p => {
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x - cameraX, p.y, 5, 5);
+    });
+    drawUI();
+}
+
+// --- ГЛАВНЫЙ ЦИКЛ ---
+
+function gameLoop() {
+    updatePhysics();
+    draw();
+    requestAnimationFrame(gameLoop);
+}
+
+loadLevel(0);
+requestAnimationFrame(gameLoop);
+
+</script>
+</body>
+</html>
